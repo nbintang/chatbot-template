@@ -1,6 +1,6 @@
 # chatbot-template
 
-A minimal chatbot template built with Next.js, the [AI SDK](https://ai-sdk.dev), [shadcn/ui](https://ui.shadcn.com), [shadcn/react](https://ui.shadcn.com/docs/react/message-scroller), [shadcn/typeset](https://ui.shadcn.com/docs/typeset) and the [Vercel AI Gateway](https://vercel.com/docs/ai-gateway).
+A minimal chatbot template built with Next.js, the [AI SDK](https://ai-sdk.dev), [shadcn/ui](https://ui.shadcn.com), [shadcn/react](https://ui.shadcn.com/docs/react/message-scroller), and an OpenAI-compatible AI API.
 
 <p>
   <a href="https://github.com/shadcn-ui/chatbot-template/stargazers"><img src="https://shieldcn.dev/github/stars/shadcn-ui/chatbot-template.svg?variant=secondary&size=xs" alt="GitHub stars" /></a>
@@ -27,18 +27,11 @@ That's it — no configuration needed. Vercel deployments authenticate to the AI
 pnpm install
 ```
 
-Then give the app a gateway credential, either by pulling an OIDC token from your linked Vercel project:
-
-```bash
-vercel link
-vercel env pull
-```
-
-or by creating an API key in the Vercel dashboard (**AI Gateway → API Keys**) and adding it to `.env.local`:
+Set your OpenAI-compatible API URL and key in `.env.local`:
 
 ```bash
 cp .env.example .env.local
-# then set AI_GATEWAY_API_KEY=...
+# then set AI_API_BASE_URL and AI_API_KEY
 ```
 
 Start the dev server:
@@ -51,9 +44,11 @@ pnpm dev
 
 | Env var              | Required       | Description                                                  |
 | -------------------- | -------------- | ------------------------------------------------------------ |
-| `AI_GATEWAY_API_KEY` | Local dev only | AI Gateway API key. Not needed on Vercel deployments (OIDC). |
+| `AI_API_BASE_URL` | Yes | OpenAI-compatible API base URL. Defaults to `http://localhost:20128/v1`. |
+| `AI_API_KEY` | Yes | Server-side API key. Never expose it in client code. |
+| `AI_MODELS` | No | Comma-separated model IDs for the model picker. |
 
-The model list lives in [lib/models.ts](lib/models.ts) — the first entry is the default model.
+The model list lives in [lib/models.ts](lib/models.ts) — or set `AI_MODELS`; the first entry is the default model.
 
 ## Security
 

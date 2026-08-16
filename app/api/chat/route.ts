@@ -8,6 +8,7 @@ import {
 } from "ai"
 
 import { DEFAULT_MODEL, isModelAllowed } from "@/lib/models"
+import { getAIModel } from "@/lib/ai"
 import { getTools, type ChatUIMessage } from "@/tools"
 
 export const maxDuration = 30
@@ -36,6 +37,13 @@ export async function POST(req: Request) {
     )
   }
 
+  if (!process.env.AI_API_KEY) {
+    return Response.json(
+      { error: "AI_API_KEY is not configured on the server." },
+      { status: 500 }
+    )
+  }
+
   const tools = getTools(modelId)
 
   // Validate the shape of every message and tool part before trusting it.
@@ -51,7 +59,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: modelId,
+    model: getAIModel(modelId),
     messages: await convertToModelMessages(messages),
     tools,
     stopWhen: isStepCount(5),
