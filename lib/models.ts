@@ -1,9 +1,6 @@
 const DEFAULT_MODELS = [
-  { id: "gpt-4o", name: "GPT-4o" },
-  { id: "mimo/mimo-v2.5-pro", name: "Xiaomi Mimo" },
   { id: "kr/claude-sonnet-4.5", name: "Claude 4.5 Sonnet" },
   { id: "ds/deepseek-v4-pro", name: "DeepSeek Chat" },
-  { id: "qwen-plus", name: "Qwen Plus" },
 ]
 
 function getModels() {

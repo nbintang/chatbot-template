@@ -8,7 +8,7 @@ import {
 } from "ai"
 
 import { DEFAULT_MODEL, isModelAllowed } from "@/lib/models"
-import { getAIModel } from "@/lib/ai"
+import { getAIInstructions, getAIModel } from "@/lib/ai"
 import { getTools, type ChatUIMessage } from "@/tools"
 
 export const maxDuration = 30
@@ -60,6 +60,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: getAIModel(modelId),
+    instructions: getAIInstructions(),
     messages: await convertToModelMessages(messages),
     tools,
     stopWhen: isStepCount(5),

@@ -42,11 +42,12 @@ pnpm dev
 
 ## Configuration
 
-| Env var              | Required       | Description                                                  |
-| -------------------- | -------------- | ------------------------------------------------------------ |
-| `AI_API_BASE_URL` | Yes | OpenAI-compatible API base URL. Defaults to `http://localhost:20128/v1`. |
-| `AI_API_KEY` | Yes | Server-side API key. Never expose it in client code. |
-| `AI_MODELS` | No | Comma-separated model IDs for the model picker. |
+| Env var            | Required | Description                                                              |
+| ------------------ | -------- | ------------------------------------------------------------------------ |
+| `AI_API_BASE_URL`  | Yes      | OpenAI-compatible API base URL. Defaults to `http://localhost:20128/v1`. |
+| `AI_API_KEY`       | Yes      | Server-side API key. Never expose it in client code.                     |
+| `AI_SYSTEM_PROMPT` | No       | Overrides the default server-side assistant instructions.                |
+| `AI_MODELS`        | No       | Comma-separated model IDs for the model picker.                          |
 
 The model list lives in [lib/models.ts](lib/models.ts) — or set `AI_MODELS`; the first entry is the default model.
 
@@ -70,13 +71,13 @@ The route already validates the request body, restricts models to [lib/models.ts
 
 Assistant messages are a list of typed parts. [components/chat-message.tsx](components/chat-message.tsx) switches on `part.type` and delegates each one to a component in [components/parts/](components/parts):
 
-| Part type          | Component                                                          | Renders                                                                                                                                       |
-| ------------------ | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `text`             | [text-part.tsx](components/parts/text-part.tsx)                   | Markdown via react-markdown and shadcn/typeset.                                                                                                |
-| `tool-github_repo` | [github-repo-part.tsx](components/parts/github-repo-part.tsx)     | A spinner while the lookup runs, then a linked stat line (stars, forks, language).                                                             |
-| `tool-web_search`  | [web-search-part.tsx](components/parts/web-search-part.tsx)       | A "Searching the web…" status while the search runs, then a persistent "Searched the web" line per search.                                     |
-| `tool-ask_user`    | [ask-user-part.tsx](components/parts/ask-user-part.tsx)           | The answered questions inline. Pending questions render in [question-card.tsx](components/question-card.tsx), pinned to the scroller bottom.   |
-| `source-url`       | [sources-part.tsx](components/parts/sources-part.tsx)             | Web search citations, deduped into a "Searched N websites" drawer once the message finishes streaming.                                         |
+| Part type          | Component                                                     | Renders                                                                                                                                      |
+| ------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `text`             | [text-part.tsx](components/parts/text-part.tsx)               | Markdown via react-markdown and shadcn/typeset.                                                                                              |
+| `tool-github_repo` | [github-repo-part.tsx](components/parts/github-repo-part.tsx) | A spinner while the lookup runs, then a linked stat line (stars, forks, language).                                                           |
+| `tool-web_search`  | [web-search-part.tsx](components/parts/web-search-part.tsx)   | A "Searching the web…" status while the search runs, then a persistent "Searched the web" line per search.                                   |
+| `tool-ask_user`    | [ask-user-part.tsx](components/parts/ask-user-part.tsx)       | The answered questions inline. Pending questions render in [question-card.tsx](components/question-card.tsx), pinned to the scroller bottom. |
+| `source-url`       | [sources-part.tsx](components/parts/sources-part.tsx)         | Web search citations, deduped into a "Searched N websites" drawer once the message finishes streaming.                                       |
 
 Tool parts move through states as the stream progresses — `input-streaming` → `input-available` → `output-available` (or `output-error`) — and each component switches on `part.state` to show progress, results, and failures.
 
